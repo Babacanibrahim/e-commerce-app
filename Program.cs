@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+//using ECommerceApp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,15 +10,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Swagger yapýlandýrmasý
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 // Web API için gerekli diðer servisleri ekleyin.
 builder.Services.AddControllers();
 
-// Uygulamayý baþlatýn.
 var app = builder.Build();
 
+// Swagger'ý geliþtirme ortamýnda aktif et
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
+    app.UseSwagger();  // Swagger'ý etkinleþtir
+    app.UseSwaggerUI(); // Swagger UI'yi etkinleþtir
 }
 
 app.UseHttpsRedirection();
