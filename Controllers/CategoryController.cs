@@ -1,5 +1,6 @@
 ﻿using ECommerceApp.DTOs;
 using ECommerceApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +14,7 @@ public class CategoryController : ControllerBase
     {
         _context = context;
     }
-
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetCategories()
     {
@@ -29,6 +30,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CreateCategory(CategoryDto categoryDto)
     {
         var category = new Category

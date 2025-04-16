@@ -4,6 +4,7 @@ using ECommerceApp.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
+using ECommerceApp.Helpers;
 
 namespace ECommerceApp.Controllers
 {
@@ -12,22 +13,28 @@ namespace ECommerceApp.Controllers
     public class UserController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly TokenService _tokenService;
 
-        public UserController(ApplicationDbContext context)
+        public UserController(ApplicationDbContext context, TokenService tokenService)
         {
             _context = context;
+            _tokenService = tokenService;
         }
 
+
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserDto dto)
+        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
             var hashedPassword = HashPassword(dto.Password);
+
+            // Kullanıcıdan gelen role'yi enum'a dönüştürme
+            var role = dto.Role == "Admin" ? Role.Admin : Role.User;
 
             var user = new User
             {
                 UserName = dto.UserName,
                 Password = hashedPassword,
-                Role = Role.User
+                Role = role  // Burada role'yi doğru şekilde atıyoruz
             };
 
             _context.Users.Add(user);
@@ -35,6 +42,7 @@ namespace ECommerceApp.Controllers
 
             return Ok("Kayıt başarılı");
         }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserDto dto)
@@ -47,8 +55,11 @@ namespace ECommerceApp.Controllers
             if (user == null)
                 return Unauthorized("Geçersiz kullanıcı adı veya şifre.");
 
-            return Ok("Giriş başarılı");
+            var token = _tokenService.GenerateToken(user);
+
+            return Ok(new { token });
         }
+
 
         private string HashPassword(string password)
         {

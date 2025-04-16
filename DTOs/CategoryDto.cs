@@ -1,8 +1,10 @@
-﻿namespace ECommerceApp.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ECommerceApp.DTOs
 {
     public class CategoryDto
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        [Required] public string Name { get; set; }
     }
 }
