@@ -27,14 +27,11 @@ namespace ECommerceApp.Controllers
         {
             var hashedPassword = HashPassword(dto.Password);
 
-            // Kullanıcıdan gelen role'yi enum'a dönüştürme
-            var role = dto.Role == "Admin" ? Role.Admin : Role.User;
-
             var user = new User
             {
                 UserName = dto.UserName,
                 Password = hashedPassword,
-                Role = role  // Burada role'yi doğru şekilde atıyoruz
+                Role = Role.User // Artık tüm kayıtlar kullanıcı rolünde olacak
             };
 
             _context.Users.Add(user);
@@ -42,6 +39,7 @@ namespace ECommerceApp.Controllers
 
             return Ok("Kayıt başarılı");
         }
+
 
 
         [HttpPost("login")]
