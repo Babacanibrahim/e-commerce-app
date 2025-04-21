@@ -14,6 +14,7 @@ public class CategoryController : ControllerBase
     {
         _context = context;
     }
+
     [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetCategories()
@@ -43,5 +44,49 @@ public class CategoryController : ControllerBase
 
         categoryDto.Id = category.Id;
         return Ok(categoryDto);
+    }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdateCategory(int id, [FromBody] Category category)
+    {
+        var existingCategory = await _context.Categories.FindAsync(id);
+        if (existingCategory == null)
+            return NotFound("Category not found.");
+
+        existingCategory.Name = category.Name;
+        _context.Categories.Update(existingCategory);
+        await _context.SaveChangesAsync();
+        return Ok(existingCategory);
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DeleteCategory(int id)
+    {
+        var category = await _context.Categories.FindAsync(id);
+        if (category == null)
+            return NotFound("Category not found.");
+
+        _context.Categories.Remove(category);
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
+    // Kategoriye bağlı ürünleri getiren metod
+    [Authorize]
+    [HttpGet("{categoryId}/products")]
+    public async Task<IActionResult> GetCategoryProducts(int categoryId)
+    {
+        var category = await _context.Categories
+            .Include(c => c.ProductCategories)
+            .ThenInclude(pc => pc.Product)
+            .FirstOrDefaultAsync(c => c.Id == categoryId);
+
+        if (category == null)
+            return NotFound("Category not found.");
+
+        var products = category.ProductCategories.Select(pc => pc.Product).ToList();
+        return Ok(products);
     }
 }

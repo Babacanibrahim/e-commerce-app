@@ -95,4 +95,50 @@ public class ProductController : ControllerBase
 
         return Ok(product);
     }
+
+    // Ürünleri kategoriye göre listeleme
+    [Authorize]
+    [HttpGet("category/{categoryId}")]
+    public async Task<IActionResult> GetProductsByCategory(int categoryId)
+    {
+        var products = await _context.Products
+            .Where(p => p.ProductCategories.Any(pc => pc.CategoryId == categoryId))
+            .Include(p => p.ProductCategories)
+            .ThenInclude(pc => pc.Category)
+            .ToListAsync();
+
+        if (!products.Any()) return NotFound("No products found in this category.");
+
+        return Ok(products);
+    }
+
+    // Ürün arama (ad içeriklerine göre)
+    [Authorize]
+    [HttpGet("search/{searchTerm}")]
+    public async Task<IActionResult> SearchProducts(string searchTerm)
+    {
+        var products = await _context.Products
+            .Where(p => p.Name.Contains(searchTerm))
+            .Include(p => p.ProductCategories)
+            .ThenInclude(pc => pc.Category)
+            .ToListAsync();
+
+        if (!products.Any()) return NotFound("No products found.");
+
+        return Ok(products);
+    }
+
+    // Ürünü silen metod
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteProduct(int id)
+    {
+        var product = await _context.Products.FindAsync(id);
+        if (product == null) return NotFound();
+
+        _context.Products.Remove(product);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }
