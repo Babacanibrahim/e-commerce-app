@@ -10,10 +10,13 @@ const Register = () => {
 
     const handleRegister = async () => {
         try {
-            await axios.post('https://localhost:7264/api/user/register', {
+            const response = await axios.post('https://localhost:7264/api/user/register', {
                 username,
                 password,
             });
+
+            // Kayıt başarılı olduğunda token alıp localStorage'a kaydet
+            localStorage.setItem('token', response.data.token);
 
             // Kayıt başarılı, login sayfasına yönlendir
             navigate('/');
@@ -38,15 +41,23 @@ const Register = () => {
                 placeholder="Kullanıcı Adı"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                style={{ padding: '10px', width: '200px', borderRadius: '4px' }}
             /><br /><br />
             <input
                 type="password"
                 placeholder="Şifre"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                style={{ padding: '10px', width: '200px', borderRadius: '4px' }}
             /><br /><br />
             <button
-                style={{ backgroundColor: 'green', color: 'white', padding: '8px 16px' }}
+                style={{
+                    backgroundColor: 'green',
+                    color: 'white',
+                    padding: '8px 16px',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                }}
                 onClick={handleRegister}
             >
                 Kayıt Ol

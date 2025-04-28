@@ -10,13 +10,16 @@ const Login = () => {
 
     const handleLogin = async () => {
         try {
-            await axios.post('https://localhost:7264/api/user/login', {
+            const response = await axios.post('https://localhost:7264/api/user/login', {
                 userName: username,  // Backend'teki UserDto'da `userName` kullanılıyor
                 password,
             });
 
+            // Token'ı localStorage'a kaydet
+            localStorage.setItem('token', response.data.token);
+
             // Giriş başarılı, ana sayfaya yönlendir
-            navigate('/home'); // Home sayfasına yönlendirebilirsiniz
+            navigate('/home');
         } catch (err: any) {
             if (err.response) {
                 if (err.response.status === 401) {
@@ -30,9 +33,6 @@ const Login = () => {
         }
     };
 
-
-
-
     return (
         <div style={{ textAlign: 'center', marginTop: '100px' }}>
             <h2>Giriş Yap</h2>
@@ -41,15 +41,23 @@ const Login = () => {
                 placeholder="Kullanıcı Adı"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                style={{ padding: '10px', width: '200px', borderRadius: '4px' }}
             /><br /><br />
             <input
                 type="password"
                 placeholder="Şifre"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                style={{ padding: '10px', width: '200px', borderRadius: '4px' }}
             /><br /><br />
             <button
-                style={{ backgroundColor: 'green', color: 'white', padding: '8px 16px' }}
+                style={{
+                    backgroundColor: 'green',
+                    color: 'white',
+                    padding: '8px 16px',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                }}
                 onClick={handleLogin}
             >
                 Giriş Yap
