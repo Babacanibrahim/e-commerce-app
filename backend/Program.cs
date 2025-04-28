@@ -6,6 +6,16 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173") // frontend portunu yaz
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
 
 // Veritabaný baðlantý dizesi
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -63,7 +73,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddControllers();
 
 var app = builder.Build();
-
+app.UseCors("AllowFrontend");
 // Swagger'ý geliþtirme ortamýnda aktif et
 if (app.Environment.IsDevelopment())
 {

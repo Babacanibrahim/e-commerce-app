@@ -25,13 +25,19 @@ namespace ECommerceApp.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
+            // Kullanıcı adı zaten var mı kontrol et
+            if (_context.Users.Any(u => u.UserName == dto.UserName))
+            {
+                return BadRequest("Username already exists");
+            }
+
             var hashedPassword = HashPassword(dto.Password);
 
             var user = new User
             {
                 UserName = dto.UserName,
                 Password = hashedPassword,
-                Role = Role.User // Artık tüm kayıtlar kullanıcı rolünde olacak
+                Role = Role.User
             };
 
             _context.Users.Add(user);
@@ -42,21 +48,29 @@ namespace ECommerceApp.Controllers
 
 
 
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserDto dto)
         {
-            var hashedPassword = HashPassword(dto.Password);
-
+            // Kullanıcı adı kontrolü
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.UserName == dto.UserName && u.Password == hashedPassword);
+                .FirstOrDefaultAsync(u => u.UserName == dto.UserName);
 
+            // Eğer kullanıcı adı bulunmazsa
             if (user == null)
-                return Unauthorized("Geçersiz kullanıcı adı veya şifre.");
+                return Unauthorized("Böyle bir kullanıcı bulunmuyor.");
 
+            // Şifre kontrolü
+            var hashedPassword = HashPassword(dto.Password);
+            if (user.Password != hashedPassword)
+                return Unauthorized("Şifre yanlış.");
+
+            // Eğer her şey doğruysa, token oluşturuluyor
             var token = _tokenService.GenerateToken(user);
 
             return Ok(new { token });
         }
+
 
 
         private string HashPassword(string password)
