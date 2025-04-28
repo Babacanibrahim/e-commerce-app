@@ -17,6 +17,7 @@ const Login = () => {
 
             // Token'ı localStorage'a kaydet
             localStorage.setItem('token', response.data.token);
+            localStorage.setItem('username', username);
 
             // Giriş başarılı, ana sayfaya yönlendir
             navigate('/home');
