@@ -3,6 +3,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
 import PrivateRoute from './components/PrivateRoute';
+import CartPage from './pages/CartPage';
 
 const App: React.FC = () => {
     return (
@@ -10,13 +11,11 @@ const App: React.FC = () => {
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                {/* PrivateRoute'ı Route ile sarmalıyoruz */}
                 <Route
                     path="/home"
-                    element={
-                        <PrivateRoute element={<Home />} />
-                    }
+                    element={<PrivateRoute element={<Home />} />}
                 />
+                <Route path="/cart" element={<CartPage />} />
             </Routes>
         </Router>
     );

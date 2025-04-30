@@ -1,6 +1,5 @@
-// pages/Home.tsx
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import Cart from '../components/Cart';
 import { Product } from '../types/Product';
@@ -42,13 +41,10 @@ const Home = () => {
         if (storedUsername) {
             setUsername(storedUsername);
         }
-
-        // Ürünleri yükle
         setProducts(sampleProducts);
     }, []);
 
     useEffect(() => {
-        // Arama işlemi
         setFilteredProducts(
             products.filter((product) =>
                 product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -56,16 +52,22 @@ const Home = () => {
         );
     }, [searchTerm, products]);
 
-    // Sepete ürün ekle
     const handleAddToCart = (product: Product) => {
         if (!cartItems.find((item) => item.id === product.id)) {
-            setCartItems([...cartItems, product]);
+            setCartItems([...cartItems, { ...product, stock: 1 }]);
         }
     };
 
-    // Sepetten ürün çıkar
     const handleRemoveFromCart = (id: number) => {
         setCartItems(cartItems.filter((item) => item.id !== id));
+    };
+
+    const handleUpdateQuantity = (id: number, quantity: number) => {
+        setCartItems(
+            cartItems.map((item) =>
+                item.id === id ? { ...item, stock: quantity } : item
+            )
+        );
     };
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,7 +81,15 @@ const Home = () => {
     };
 
     return (
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <div style={{ textAlign: 'center', marginTop: '50px', position: 'relative' }}>
+            {/* Sepet ikonu sağ üst */}
+            <div style={{ position: 'absolute', top: 20, right: 20, textAlign: 'center' }}>
+                <Link to="/cart" state={{ cartItems }} style={{ textDecoration: 'none', color: 'black' }}>
+                    <div style={{ fontSize: '24px' }}>🛒</div>
+                    <div>Sepetim</div>
+                </Link>
+            </div>
+
             <h1>Hoşgeldin {username}</h1>
 
             <button
@@ -111,15 +121,17 @@ const Home = () => {
                 />
             </div>
 
-            {/* Ürünleri listele */}
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
                 {filteredProducts.map((product) => (
                     <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
                 ))}
             </div>
 
-            {/* Sepet */}
-            <Cart cartItems={cartItems} onRemoveFromCart={handleRemoveFromCart} />
+            <Cart
+                cartItems={cartItems}
+                onRemoveFromCart={handleRemoveFromCart}
+                onUpdateQuantity={handleUpdateQuantity}
+            />
         </div>
     );
 };
