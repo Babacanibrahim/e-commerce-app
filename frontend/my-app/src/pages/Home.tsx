@@ -1,37 +1,41 @@
+// pages/Home.tsx
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ProductCard from '../components/ProductCard';
+import Cart from '../components/Cart';
+import { Product } from '../types/Product';
 
-// Deneme amaçlı ürünler
-const sampleProducts = [
+const sampleProducts: Product[] = [
     {
         id: 1,
         name: "iPhone 13",
         price: 1299.99,
         stock: 25,
-        imageUrl: "/images/iphone13.jpg",
+        imageUrl: "iphone13.jpg",
     },
     {
         id: 2,
         name: "Samsung Galaxy S21",
         price: 999.99,
         stock: 18,
-        imageUrl: "/images/galaxys21.jpg",
+        imageUrl: "galaxys21.jpg",
     },
     {
         id: 3,
         name: "MacBook Pro 16",
         price: 2399.99,
         stock: 15,
-        imageUrl: "/images/macbookpro16.jpg",
+        imageUrl: "macbookpro16.jpg",
     },
 ];
 
 const Home = () => {
     const [username, setUsername] = useState<string>('');
-    const [products, setProducts] = useState<any[]>([]); // Ürünlerin state'i
-    const [searchTerm, setSearchTerm] = useState<string>(''); // Arama için
-    const [filteredProducts, setFilteredProducts] = useState<any[]>([]); // Filtrelenmiş ürünler
-    const navigate = useNavigate(); // Yönlendirme için
+    const [products, setProducts] = useState<Product[]>([]);
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+    const [cartItems, setCartItems] = useState<Product[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const storedUsername = localStorage.getItem('username');
@@ -44,13 +48,25 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        // Arama filtreleme işlemi
+        // Arama işlemi
         setFilteredProducts(
             products.filter((product) =>
                 product.name.toLowerCase().includes(searchTerm.toLowerCase())
             )
         );
     }, [searchTerm, products]);
+
+    // Sepete ürün ekle
+    const handleAddToCart = (product: Product) => {
+        if (!cartItems.find((item) => item.id === product.id)) {
+            setCartItems([...cartItems, product]);
+        }
+    };
+
+    // Sepetten ürün çıkar
+    const handleRemoveFromCart = (id: number) => {
+        setCartItems(cartItems.filter((item) => item.id !== id));
+    };
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
@@ -59,7 +75,7 @@ const Home = () => {
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
-        navigate('/'); // Çıkış yapınca login sayfasına yönlendir
+        navigate('/');
     };
 
     return (
@@ -74,14 +90,13 @@ const Home = () => {
                     padding: '8px 16px',
                     borderRadius: '4px',
                     cursor: 'pointer',
-                    marginTop: '20px'
+                    marginTop: '20px',
                 }}
             >
                 Çıkış Yap
             </button>
 
             <div>
-                {/* Arama çubuğu */}
                 <input
                     type="text"
                     placeholder="Ürün ara"
@@ -96,37 +111,15 @@ const Home = () => {
                 />
             </div>
 
+            {/* Ürünleri listele */}
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-                {/* Ürünleri listele */}
                 {filteredProducts.map((product) => (
-                    <div key={product.id} style={{ margin: '20px', width: '250px' }}>
-                        <img
-                            src={product.imageUrl}
-                            alt={product.name}
-                            style={{
-                                width: '100%',
-                                height: '200px',
-                                objectFit: 'cover',
-                                borderRadius: '8px',
-                            }}
-                        />
-                        <h3>{product.name}</h3>
-                        <p>Fiyat: ${product.price}</p>
-                        <p>Stok: {product.stock}</p>
-                        <button
-                            style={{
-                                backgroundColor: 'green',
-                                color: 'white',
-                                padding: '8px 16px',
-                                borderRadius: '4px',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            Sepete Ekle
-                        </button>
-                    </div>
+                    <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
                 ))}
             </div>
+
+            {/* Sepet */}
+            <Cart cartItems={cartItems} onRemoveFromCart={handleRemoveFromCart} />
         </div>
     );
 };
