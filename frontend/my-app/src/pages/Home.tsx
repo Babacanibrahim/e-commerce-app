@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
-import Cart from '../components/Cart';
 import { Product } from '../types/Product';
 
 const sampleProducts: Product[] = [
@@ -56,18 +55,6 @@ const Home = () => {
         if (!cartItems.find((item) => item.id === product.id)) {
             setCartItems([...cartItems, { ...product, stock: 1 }]);
         }
-    };
-
-    const handleRemoveFromCart = (id: number) => {
-        setCartItems(cartItems.filter((item) => item.id !== id));
-    };
-
-    const handleUpdateQuantity = (id: number, quantity: number) => {
-        setCartItems(
-            cartItems.map((item) =>
-                item.id === id ? { ...item, stock: quantity } : item
-            )
-        );
     };
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,12 +113,6 @@ const Home = () => {
                     <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
                 ))}
             </div>
-
-            <Cart
-                cartItems={cartItems}
-                onRemoveFromCart={handleRemoveFromCart}
-                onUpdateQuantity={handleUpdateQuantity}
-            />
         </div>
     );
 };
