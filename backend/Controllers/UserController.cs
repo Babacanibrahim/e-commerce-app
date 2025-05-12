@@ -68,7 +68,12 @@ namespace ECommerceApp.Controllers
             // Eğer her şey doğruysa, token oluşturuluyor
             var token = _tokenService.GenerateToken(user);
 
-            return Ok(new { token });
+            return Ok(new
+            {
+                token,
+                username = user.UserName,
+                role = user.Role 
+            });
         }
 
 

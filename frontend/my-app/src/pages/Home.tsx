@@ -37,11 +37,19 @@ const Home = () => {
 
     useEffect(() => {
         const storedUsername = localStorage.getItem('username');
+        const role = localStorage.getItem('role');
+
+        if (role === 'admin') {
+            navigate('/admin');
+            return;
+        }
+
         if (storedUsername) {
             setUsername(storedUsername);
         }
+
         setProducts(sampleProducts);
-    }, []);
+    }, [navigate]);
 
     useEffect(() => {
         setFilteredProducts(
@@ -64,13 +72,13 @@ const Home = () => {
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
+        localStorage.removeItem('role');
         navigate('/');
     };
 
     return (
         <div style={{ textAlign: 'center', marginTop: '50px', position: 'relative' }}>
-            {/* Sepet ikonu sağ üst */}
-            <div style={{ position: 'absolute', top: 20, right: 20, textAlign: 'center' }}>
+            <div style={{ position: 'absolute', top: 20, right: 20 }}>
                 <Link to="/cart" state={{ cartItems }} style={{ textDecoration: 'none', color: 'black' }}>
                     <div style={{ fontSize: '24px' }}>🛒</div>
                     <div>Sepetim</div>

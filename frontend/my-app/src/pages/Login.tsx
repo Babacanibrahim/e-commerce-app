@@ -11,25 +11,28 @@ const Login = () => {
     const handleLogin = async () => {
         try {
             const response = await axios.post('https://localhost:7264/api/user/login', {
-                userName: username,  // Backend'teki UserDto'da `userName` kullanılıyor
+                userName: username,
                 password,
             });
 
-            // Token'ı localStorage'a kaydet
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('username', username);
+            const { token, role } = response.data;
 
-            // Giriş başarılı, ana sayfaya yönlendir
-            navigate('/home');
-        } catch (err: any) {
-            if (err.response) {
-                if (err.response.status === 401) {
-                    setError(err.response.data || "Böyle bir kullanıcı yok veya şifre yanlış.");
-                } else {
-                    setError(err.response.data || "Giriş sırasında bir hata oluştu.");
-                }
+            // LocalStorage'a kayıt
+            localStorage.setItem('token', token);
+            localStorage.setItem('username', username);
+            localStorage.setItem('role', role);
+
+            // Role göre yönlendirme
+            if (role === 0) {  // admin
+                navigate('/admin');
             } else {
-                setError("Sunucuya ulaşılamıyor.");
+                navigate('/home');
+            }
+        } catch (err: any) {
+            if (err.response?.status === 401) {
+                setError('Böyle bir kullanıcı yok veya şifre yanlış.');
+            } else {
+                setError('Sunucuya ulaşılamıyor.');
             }
         }
     };

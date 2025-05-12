@@ -4,6 +4,7 @@ import Register from './pages/Register';
 import Home from './pages/Home';
 import PrivateRoute from './components/PrivateRoute';
 import CartPage from './pages/CartPage';
+import Admin from './pages/Admin';
 
 const App: React.FC = () => {
     return (
@@ -14,6 +15,10 @@ const App: React.FC = () => {
                 <Route
                     path="/home"
                     element={<PrivateRoute element={<Home />} />}
+                />
+                <Route
+                    path="/admin"
+                    element={<PrivateRoute element={<Admin />} />}
                 />
                 <Route path="/cart" element={<CartPage />} />
             </Routes>
