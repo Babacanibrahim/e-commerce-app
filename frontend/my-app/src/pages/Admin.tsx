@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import '../styles/Admin.css';
 
 const Admin = () => {
     const navigate = useNavigate();
@@ -138,11 +139,11 @@ const Admin = () => {
     };
 
     return (
-        <div style={{ padding: '20px' }}>
-            <h1>Admin Paneline Hoşgeldiniz</h1>
+        <div style={{ padding: '20px', backgroundColor: '#f4f4f4', fontFamily: 'Arial, sans-serif' }}>
+            <h1 style={{ color: '#333', fontSize: '2rem', fontWeight: 'bold' }}>Admin Paneline Hoşgeldiniz</h1>
 
             {/* Ürün Ekleme */}
-            <div>
+            <div className="card">
                 <h2>Ürün Ekle</h2>
                 <input
                     type="text"
@@ -173,11 +174,11 @@ const Admin = () => {
                         </option>
                     ))}
                 </select>
-                <button onClick={handleProductSubmit}>Ürün Ekle</button>
+                <button className="button" onClick={handleProductSubmit}>Ürün Ekle</button>
             </div>
 
             {/* Kategori Ekleme */}
-            <div>
+            <div className="card">
                 <h2>Kategori Ekle</h2>
                 <input
                     type="text"
@@ -185,7 +186,7 @@ const Admin = () => {
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
                 />
-                <button onClick={handleCategorySubmit}>Kategori Ekle</button>
+                <button className="button" onClick={handleCategorySubmit}>Kategori Ekle</button>
             </div>
 
             {/* Ürün Listeleme */}
@@ -193,10 +194,10 @@ const Admin = () => {
                 <h2>Ürünler</h2>
                 <ul>
                     {products.map((product) => (
-                        <li key={product.id}>
+                        <li key={product.id} className="list-item">
                             {product.name} - {product.price} TL - Stok: {product.stock}
-                            <button onClick={() => handleProductEdit(product)}>Düzenle</button>
-                            <button onClick={() => handleProductDelete(product.id)}>Sil</button>
+                            <button onClick={() => handleProductEdit(product)} className="button">Düzenle</button>
+                            <button onClick={() => handleProductDelete(product.id)} className="button">Sil</button>
                         </li>
                     ))}
                 </ul>
@@ -207,10 +208,10 @@ const Admin = () => {
                 <h2>Kategoriler</h2>
                 <ul>
                     {categories.map((category) => (
-                        <li key={category.id}>
+                        <li key={category.id} className="list-item">
                             {category.name}
-                            <button onClick={() => handleCategoryEdit(category)}>Düzenle</button>
-                            <button onClick={() => handleCategoryDelete(category.id)}>Sil</button>
+                            <button onClick={() => handleCategoryEdit(category)} className="button">Düzenle</button>
+                            <button onClick={() => handleCategoryDelete(category.id)} className="button">Sil</button>
                         </li>
                     ))}
                 </ul>
@@ -221,12 +222,11 @@ const Admin = () => {
                 <h2>Siparişler</h2>
                 <ul>
                     {orders.map((order, index) => (
-                        <li key={index}>
+                        <li key={index} className="list-item">
                             Kullanıcı: {order.userName} <br />
                             Ürünler: {order.productNames.join(', ')}
                         </li>
                     ))}
-
                 </ul>
             </div>
         </div>
