@@ -10,7 +10,7 @@ const Login = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post('https://localhost:7264/api/user/login', {
+            const response = await axios.post('https://localhost:7264/api/User/login', {
                 userName: username,
                 password,
             });

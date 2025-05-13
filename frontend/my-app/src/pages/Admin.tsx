@@ -220,11 +220,13 @@ const Admin = () => {
             <div>
                 <h2>Siparişler</h2>
                 <ul>
-                    {orders.map((order) => (
-                        <li key={order.id}>
-                            Sipariş ID: {order.id} - Kullanıcı: {order.userName} - Durum: {order.status}
+                    {orders.map((order, index) => (
+                        <li key={index}>
+                            Kullanıcı: {order.userName} <br />
+                            Ürünler: {order.productNames.join(', ')}
                         </li>
                     ))}
+
                 </ul>
             </div>
         </div>

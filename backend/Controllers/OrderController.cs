@@ -15,7 +15,7 @@ public class OrderController : ControllerBase
         _context = context;
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [HttpGet("user/{userId}")]
     public async Task<IActionResult> GetOrdersByUserId(int userId)
     {
@@ -39,7 +39,7 @@ public class OrderController : ControllerBase
         return Ok(orders);
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [HttpGet("all")]
     public async Task<IActionResult> GetAllOrders()
     {
