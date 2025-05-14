@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import '../styles/Auth.css';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -16,14 +17,11 @@ const Login = () => {
             });
 
             const { token, role } = response.data;
-
-            // LocalStorage'a kayıt
             localStorage.setItem('token', token);
             localStorage.setItem('username', username);
             localStorage.setItem('role', role);
 
-            // Role göre yönlendirme
-            if (role === 0) {  // admin
+            if (role === 0) {
                 navigate('/admin');
             } else {
                 navigate('/home');
@@ -38,38 +36,31 @@ const Login = () => {
     };
 
     return (
-        <div style={{ textAlign: 'center', marginTop: '100px' }}>
-            <h2>Giriş Yap</h2>
-            <input
-                type="text"
-                placeholder="Kullanıcı Adı"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                style={{ padding: '10px', width: '200px', borderRadius: '4px' }}
-            /><br /><br />
-            <input
-                type="password"
-                placeholder="Şifre"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                style={{ padding: '10px', width: '200px', borderRadius: '4px' }}
-            /><br /><br />
-            <button
-                style={{
-                    backgroundColor: 'green',
-                    color: 'white',
-                    padding: '8px 16px',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                }}
-                onClick={handleLogin}
-            >
-                Giriş Yap
-            </button><br /><br />
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <p>
-                Henüz hesabın yok mu? <Link to="/register">Kayıt ol</Link>
-            </p>
+        <div className="auth-wrapper">
+            <div className="auth-card">
+                <h2>Giriş Yap</h2>
+                <input
+                    type="text"
+                    placeholder="Kullanıcı Adı"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="auth-input"
+                />
+                <input
+                    type="password"
+                    placeholder="Şifre"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="auth-input"
+                />
+                <button className="auth-button" onClick={handleLogin}>
+                    Giriş Yap
+                </button>
+                {error && <p className="auth-error">{error}</p>}
+                <p>
+                    Henüz hesabın yok mu? <Link to="/register">Kayıt ol</Link>
+                </p>
+            </div>
         </div>
     );
 };

@@ -1,31 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
 import ProductCard from '../components/ProductCard';
 import { Product } from '../types/Product';
-
-const sampleProducts: Product[] = [
-    {
-        id: 1,
-        name: "iPhone 13",
-        price: 1299.99,
-        stock: 25,
-        imageUrl: "iphone13.jpg",
-    },
-    {
-        id: 2,
-        name: "Samsung Galaxy S21",
-        price: 999.99,
-        stock: 18,
-        imageUrl: "galaxys21.jpg",
-    },
-    {
-        id: 3,
-        name: "MacBook Pro 16",
-        price: 2399.99,
-        stock: 15,
-        imageUrl: "macbookpro16.jpg",
-    },
-];
 
 const Home = () => {
     const [username, setUsername] = useState<string>('');
@@ -48,7 +25,21 @@ const Home = () => {
             setUsername(storedUsername);
         }
 
-        setProducts(sampleProducts);
+        // Token'ı localStorage'dan al
+        const token = localStorage.getItem('token');
+
+        // Ürünleri backend'den çekme
+        axios.get('https://localhost:7264/api/Product', {
+            headers: {
+                Authorization: `Bearer ${token}`, // Token'ı başlığa ekle
+            },
+        })
+            .then((response) => {
+                setProducts(response.data);  // Veriyi ürünlere ata
+            })
+            .catch((error) => {
+                console.error('Ürün verileri alınamadı:', error);
+            });
     }, [navigate]);
 
     useEffect(() => {

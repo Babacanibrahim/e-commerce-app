@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import '../styles/Auth.css';
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -15,10 +16,7 @@ const Register = () => {
                 password,
             });
 
-            // Kayıt başarılı olduğunda token alıp localStorage'a kaydet
             localStorage.setItem('token', response.data.token);
-
-            // Kayıt başarılı, login sayfasına yönlendir
             navigate('/');
         } catch (err: any) {
             if (err.response) {
@@ -34,38 +32,31 @@ const Register = () => {
     };
 
     return (
-        <div style={{ textAlign: 'center', marginTop: '100px' }}>
-            <h2>Kayıt Ol</h2>
-            <input
-                type="text"
-                placeholder="Kullanıcı Adı"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                style={{ padding: '10px', width: '200px', borderRadius: '4px' }}
-            /><br /><br />
-            <input
-                type="password"
-                placeholder="Şifre"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                style={{ padding: '10px', width: '200px', borderRadius: '4px' }}
-            /><br /><br />
-            <button
-                style={{
-                    backgroundColor: 'green',
-                    color: 'white',
-                    padding: '8px 16px',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                }}
-                onClick={handleRegister}
-            >
-                Kayıt Ol
-            </button><br /><br />
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <p>
-                Zaten bir hesabın var mı? <Link to="/">Giriş yap</Link>
-            </p>
+        <div className="auth-wrapper">
+            <div className="auth-card">
+                <h2>Kayıt Ol</h2>
+                <input
+                    type="text"
+                    placeholder="Kullanıcı Adı"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="auth-input"
+                />
+                <input
+                    type="password"
+                    placeholder="Şifre"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="auth-input"
+                />
+                <button className="auth-button" onClick={handleRegister}>
+                    Kayıt Ol
+                </button>
+                {error && <p className="auth-error">{error}</p>}
+                <p>
+                    Zaten bir hesabın var mı? <Link to="/">Giriş yap</Link>
+                </p>
+            </div>
         </div>
     );
 };

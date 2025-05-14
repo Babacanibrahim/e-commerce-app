@@ -1,0 +1,70 @@
+/* Global Stiller */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #60a3be;
+    /* Lacivert arka plan */
+    color: #ffffff;
+    /* Yazı rengi beyaz */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    /* Ortala */
+    align-items: center;
+    /* Ortala */
+    height: 100vh;
+    /* Ekranı tamamen kapla */
+}
+
+/* Giriş/Kayıt Kartı */
+.auth-card {
+    background-color: rgb(114, 177, 200);
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 320px;
+}
+
+/* Giriş/Kayıt Formu */
+.auth-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    border: 1px solid #1d3db4;
+    box-sizing: border-box;
+}
+
+/* Giriş/Kayıt Butonu */
+.auth-button {
+    width: 100%;
+    background-color: green;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+}
+
+.auth-button:hover {
+    background-color: darkgreen;
+}
+
+/* Hata Mesajı */
+.auth-error {
+    color: red;
+    margin-bottom: 10px;
+}
+
+/* Linkler */
+a {
+    color: #300ada;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

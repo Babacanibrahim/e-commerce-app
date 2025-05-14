@@ -139,95 +139,112 @@ const Admin = () => {
     };
 
     return (
-        <div style={{ padding: '20px', backgroundColor: '#f4f4f4', fontFamily: 'Arial, sans-serif' }}>
-            <h1 style={{ color: '#333', fontSize: '2rem', fontWeight: 'bold' }}>Admin Paneline Hoşgeldiniz</h1>
-
-            {/* Ürün Ekleme */}
-            <div className="card">
-                <h2>Ürün Ekle</h2>
-                <input
-                    type="text"
-                    placeholder="Ürün Adı"
-                    value={newProduct.name}
-                    onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-                />
-                <input
-                    type="number"
-                    placeholder="Fiyat"
-                    value={newProduct.price}
-                    onChange={(e) => setNewProduct({ ...newProduct, price: +e.target.value })}
-                />
-                <input
-                    type="number"
-                    placeholder="Stok"
-                    value={newProduct.stock}
-                    onChange={(e) => setNewProduct({ ...newProduct, stock: +e.target.value })}
-                />
-                <select
-                    value={newProduct.category}
-                    onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
-                >
-                    <option value="">Kategori Seç</option>
-                    {categories.map((category) => (
-                        <option key={category.id} value={category.name}>
-                            {category.name}
-                        </option>
-                    ))}
-                </select>
-                <button className="button" onClick={handleProductSubmit}>Ürün Ekle</button>
-            </div>
-
-            {/* Kategori Ekleme */}
-            <div className="card">
-                <h2>Kategori Ekle</h2>
-                <input
-                    type="text"
-                    placeholder="Kategori Adı"
-                    value={newCategory}
-                    onChange={(e) => setNewCategory(e.target.value)}
-                />
-                <button className="button" onClick={handleCategorySubmit}>Kategori Ekle</button>
-            </div>
-
-            {/* Ürün Listeleme */}
-            <div>
-                <h2>Ürünler</h2>
+        <div style={{ display: 'flex' }}>
+            {/* Sol Panel */}
+            <div className="admin-panel">
+                <h2>Admin Panel</h2>
+                <p>Hoşgeldiniz!</p>
+                <p>İşlemler:</p>
                 <ul>
-                    {products.map((product) => (
-                        <li key={product.id} className="list-item">
-                            {product.name} - {product.price} TL - Stok: {product.stock}
-                            <button onClick={() => handleProductEdit(product)} className="button">Düzenle</button>
-                            <button onClick={() => handleProductDelete(product.id)} className="button">Sil</button>
-                        </li>
-                    ))}
+                    <li>Ürün Ekle</li>
+                    <li>Kategori Ekle</li>
+                    <li>Ürün Listesi</li>
+                    <li>Kategori Listesi</li>
+                    <li>Siparişler</li>
                 </ul>
             </div>
 
-            {/* Kategori Listeleme */}
-            <div>
-                <h2>Kategoriler</h2>
-                <ul>
-                    {categories.map((category) => (
-                        <li key={category.id} className="list-item">
-                            {category.name}
-                            <button onClick={() => handleCategoryEdit(category)} className="button">Düzenle</button>
-                            <button onClick={() => handleCategoryDelete(category.id)} className="button">Sil</button>
-                        </li>
-                    ))}
-                </ul>
-            </div>
+            {/* Sağ İçerik Paneli */}
+            <div className="main-content">
+                <h1>Admin Paneline Hoşgeldiniz</h1>
 
-            {/* Siparişler */}
-            <div>
-                <h2>Siparişler</h2>
-                <ul>
-                    {orders.map((order, index) => (
-                        <li key={index} className="list-item">
-                            Kullanıcı: {order.userName} <br />
-                            Ürünler: {order.productNames.join(', ')}
-                        </li>
-                    ))}
-                </ul>
+                {/* Ürün Ekleme */}
+                <div className="card">
+                    <h2>Ürün Ekle</h2>
+                    <input
+                        type="text"
+                        placeholder="Ürün Adı"
+                        value={newProduct.name}
+                        onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+                    />
+                    <input
+                        type="number"
+                        placeholder="Fiyat"
+                        value={newProduct.price}
+                        onChange={(e) => setNewProduct({ ...newProduct, price: +e.target.value })}
+                    />
+                    <input
+                        type="number"
+                        placeholder="Stok"
+                        value={newProduct.stock}
+                        onChange={(e) => setNewProduct({ ...newProduct, stock: +e.target.value })}
+                    />
+                    <select
+                        value={newProduct.category}
+                        onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
+                    >
+                        <option value="">Kategori Seç</option>
+                        {categories.map((category) => (
+                            <option key={category.id} value={category.name}>
+                                {category.name}
+                            </option>
+                        ))}
+                    </select>
+                    <button onClick={handleProductSubmit}>Ürün Ekle</button>
+                </div>
+
+                {/* Kategori Ekleme */}
+                <div className="card">
+                    <h2>Kategori Ekle</h2>
+                    <input
+                        type="text"
+                        placeholder="Kategori Adı"
+                        value={newCategory}
+                        onChange={(e) => setNewCategory(e.target.value)}
+                    />
+                    <button onClick={handleCategorySubmit}>Kategori Ekle</button>
+                </div>
+
+                {/* Ürün Listeleme */}
+                <div>
+                    <h2>Ürünler</h2>
+                    <ul>
+                        {products.map((product) => (
+                            <li key={product.id} className="list-item">
+                                {product.name} - {product.price} TL - Stok: {product.stock}
+                                <button onClick={() => handleProductEdit(product)}>Düzenle</button>
+                                <button onClick={() => handleProductDelete(product.id)}>Sil</button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+
+                {/* Kategori Listeleme */}
+                <div>
+                    <h2>Kategoriler</h2>
+                    <ul>
+                        {categories.map((category) => (
+                            <li key={category.id} className="list-item">
+                                {category.name}
+                                <button onClick={() => handleCategoryEdit(category)}>Düzenle</button>
+                                <button onClick={() => handleCategoryDelete(category.id)}>Sil</button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+
+                {/* Siparişler */}
+                <div>
+                    <h2>Siparişler</h2>
+                    <ul>
+                        {orders.map((order, index) => (
+                            <li key={index} className="list-item">
+                                Kullanıcı: {order.userName} <br />
+                                Ürünler: {order.productNames.join(', ')}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
         </div>
     );
