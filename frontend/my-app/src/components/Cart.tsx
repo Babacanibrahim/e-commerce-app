@@ -1,14 +1,14 @@
-import { Product } from '../types/Product';
+import { CartItem } from '../types/CartItem';
 
 interface CartProps {
-    cartItems: Product[];
+    cartItems: CartItem[];
     onRemoveFromCart: (id: number) => void;
     onUpdateQuantity: (id: number, quantity: number) => void;
 }
 
 const Cart = ({ cartItems, onRemoveFromCart, onUpdateQuantity }: CartProps) => {
     const calculateTotal = () => {
-        return cartItems.reduce((total, item) => total + item.price * item.stock, 0);
+        return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
     };
 
     const handleQuantityChange = (id: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,12 +35,13 @@ const Cart = ({ cartItems, onRemoveFromCart, onUpdateQuantity }: CartProps) => {
                             <div style={{ flex: 1 }}>
                                 <h3>{product.name}</h3>
                                 <p>Fiyat: ${product.price}</p>
-                                <p>Stok: {product.stock}</p>
+                                <p>Miktar:</p>
                                 <input
                                     type="number"
-                                    value={product.stock}
+                                    value={product.quantity}
                                     onChange={(e) => handleQuantityChange(product.id, e)}
                                     style={{ width: '50px', padding: '5px', marginRight: '10px' }}
+                                    min={1}
                                 />
                                 <button
                                     onClick={() => onRemoveFromCart(product.id)}

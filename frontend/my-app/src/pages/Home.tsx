@@ -2,19 +2,21 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import ProductCard from '../components/ProductCard';
-import { Product } from '../types/Product';
+import { CartItem } from '../types/CartItem';
+import { Product } from '../types/Product'; // Product tipi hâlâ ürün verisi için kullanılacak
 
 const Home = () => {
     const [username, setUsername] = useState<string>('');
-    const [products, setProducts] = useState<Product[]>([]);
+    const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-    const [cartItems, setCartItems] = useState<Product[]>([]);
+    const [products, setProducts] = useState<Product[]>([]);
     const navigate = useNavigate();
 
     useEffect(() => {
         const storedUsername = localStorage.getItem('username');
         const role = localStorage.getItem('role');
+        const storedCart = localStorage.getItem('cartItems');
 
         if (role === 'admin') {
             navigate('/admin');
@@ -25,17 +27,19 @@ const Home = () => {
             setUsername(storedUsername);
         }
 
-        // Token'ı localStorage'dan al
+        if (storedCart) {
+            setCartItems(JSON.parse(storedCart));
+        }
+
         const token = localStorage.getItem('token');
 
-        // Ürünleri backend'den çekme
         axios.get('https://localhost:7264/api/Product', {
             headers: {
-                Authorization: `Bearer ${token}`, // Token'ı başlığa ekle
+                Authorization: `Bearer ${token}`,
             },
         })
             .then((response) => {
-                setProducts(response.data);  // Veriyi ürünlere ata
+                setProducts(response.data);
             })
             .catch((error) => {
                 console.error('Ürün verileri alınamadı:', error);
@@ -50,9 +54,14 @@ const Home = () => {
         );
     }, [searchTerm, products]);
 
+    useEffect(() => {
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    }, [cartItems]);
+
     const handleAddToCart = (product: Product) => {
-        if (!cartItems.find((item) => item.id === product.id)) {
-            setCartItems([...cartItems, { ...product, stock: 1 }]);
+        const existingItem = cartItems.find((item) => item.id === product.id);
+        if (!existingItem) {
+            setCartItems([...cartItems, { ...product, quantity: 1 }]);
         }
     };
 
@@ -64,13 +73,14 @@ const Home = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
         localStorage.removeItem('role');
+        localStorage.removeItem('cartItems');
         navigate('/');
     };
 
     return (
         <div style={{ textAlign: 'center', marginTop: '50px', position: 'relative' }}>
             <div style={{ position: 'absolute', top: 20, right: 20 }}>
-                <Link to="/cart" state={{ cartItems }} style={{ textDecoration: 'none', color: 'black' }}>
+                <Link to="/cart" style={{ textDecoration: 'none', color: 'black' }} state={{ cartItems }}>
                     <div style={{ fontSize: '24px' }}>🛒</div>
                     <div>Sepetim</div>
                 </Link>
