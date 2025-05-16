@@ -60,10 +60,21 @@ const Home = () => {
 
     const handleAddToCart = (product: Product) => {
         const existingItem = cartItems.find((item) => item.id === product.id);
-        if (!existingItem) {
+        if (existingItem) {
+            if (existingItem.quantity < product.stock) {
+                setCartItems(cartItems.map(item =>
+                    item.id === product.id
+                        ? { ...item, quantity: item.quantity + 1 }
+                        : item
+                ));
+            } else {
+                alert("Stok yetersiz!");
+            }
+        } else {
             setCartItems([...cartItems, { ...product, quantity: 1 }]);
         }
     };
+
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
