@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CartItem } from '../types/CartItem';
 import Cart from '../components/Cart';
+import axios from 'axios';
 
 const CartPage = () => {
     const navigate = useNavigate();
@@ -24,7 +25,7 @@ const CartPage = () => {
     };
 
     const handleUpdateQuantity = (id: number, quantity: number) => {
-        if (quantity < 1) return; // negatif ve 0 miktar engelleme
+        if (quantity < 1) return;
         const updated = cartItems.map(item =>
             item.id === id ? { ...item, quantity } : item
         );
@@ -33,6 +34,33 @@ const CartPage = () => {
 
     const handleGoBack = () => {
         navigate('/home');
+    };
+
+    const handleOrderSubmit = async () => {
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+
+        try {
+            await axios.post('https://localhost:7264/api/Order', {
+                username: username,
+                orderItems: cartItems.map(item => ({
+                    productId: item.id,
+                    quantity: item.quantity
+                }))
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            alert('Sipariş başarıyla oluşturuldu!');
+            setCartItems([]);
+            localStorage.removeItem('cartItems');
+            navigate('/home');
+        } catch (error) {
+            console.error('Sipariş oluşturulamadı:', error);
+            alert('Sipariş sırasında bir hata oluştu.');
+        }
     };
 
     return (
@@ -44,6 +72,21 @@ const CartPage = () => {
                 onUpdateQuantity={handleUpdateQuantity}
             />
             <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <button
+                    onClick={handleOrderSubmit}
+                    style={{
+                        backgroundColor: 'green',
+                        color: 'white',
+                        padding: '10px 20px',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
+                        marginBottom: '10px'
+                    }}
+                >
+                    ✅ Siparişi Tamamla
+                </button>
+                <br />
                 <button
                     onClick={handleGoBack}
                     style={{

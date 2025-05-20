@@ -15,6 +15,12 @@ const Admin = () => {
         category: '',
     });
     const [newCategory, setNewCategory] = useState('');
+    const [editMode, setEditMode] = useState(false);
+    const [editProductId, setEditProductId] = useState<number | null>(null);
+
+    const [editCategoryMode, setEditCategoryMode] = useState(false);
+    const [editCategoryId, setEditCategoryId] = useState<number | null>(null);
+
 
     const token = localStorage.getItem('token');
 
@@ -75,29 +81,55 @@ const Admin = () => {
         }
 
         try {
-            await axios.post('https://localhost:7264/api/Product', newProduct, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            if (editMode && editProductId !== null) {
+                await axios.put(`https://localhost:7264/api/Product/${editProductId}`, newProduct, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            } else {
+                await axios.post('https://localhost:7264/api/Product', newProduct, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            }
+
             fetchProducts();
+            setNewProduct({ name: '', price: 0, stock: 0, category: '' });
+            setEditMode(false);
+            setEditProductId(null);
         } catch (error) {
             console.error('handleProductSubmit error:', error);
         }
     };
 
+
     const handleCategorySubmit = async () => {
         try {
-            await axios.post('https://localhost:7264/api/Category', { name: newCategory }, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            if (editCategoryMode && editCategoryId !== null) {
+                await axios.put(`https://localhost:7264/api/Category/${editCategoryId}`, { name: newCategory }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            } else {
+                await axios.post('https://localhost:7264/api/Category', { name: newCategory }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            }
+
             fetchCategories();
+            setNewCategory('');
+            setEditCategoryMode(false);
+            setEditCategoryId(null);
         } catch (error) {
             console.error('handleCategorySubmit error:', error);
         }
     };
+
 
     const handleProductEdit = (product: any) => {
         setNewProduct({
@@ -106,7 +138,10 @@ const Admin = () => {
             stock: product.stock,
             category: product.category,
         });
+        setEditProductId(product.id);
+        setEditMode(true);
     };
+
 
     const handleProductDelete = async (productId: number) => {
         try {
@@ -123,7 +158,10 @@ const Admin = () => {
 
     const handleCategoryEdit = (category: any) => {
         setNewCategory(category.name);
+        setEditCategoryMode(true);
+        setEditCategoryId(category.id);
     };
+
 
     const handleCategoryDelete = async (categoryId: number) => {
         try {
