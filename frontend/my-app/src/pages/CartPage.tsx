@@ -8,6 +8,7 @@ const CartPage = () => {
     const navigate = useNavigate();
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
+    // localStorage'dan sepeti yükle
     useEffect(() => {
         const storedCart = localStorage.getItem('cartItems');
         if (storedCart) {
@@ -15,15 +16,18 @@ const CartPage = () => {
         }
     }, []);
 
+    // Sepet değişince localStorage'ı güncelle
     useEffect(() => {
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
     }, [cartItems]);
 
+    // Sepetten ürün çıkar
     const handleRemoveFromCart = (id: number) => {
         const updated = cartItems.filter(item => item.id !== id);
         setCartItems(updated);
     };
 
+    // Miktarı güncelle
     const handleUpdateQuantity = (id: number, quantity: number) => {
         if (quantity < 1) return;
         const updated = cartItems.map(item =>
@@ -32,18 +36,22 @@ const CartPage = () => {
         setCartItems(updated);
     };
 
+    // Mağazaya geri dön
     const handleGoBack = () => {
         navigate('/home');
     };
 
+    // Siparişi gönder
     const handleOrderSubmit = async () => {
         const token = localStorage.getItem('token');
-        const username = localStorage.getItem('username');
+        if (!token) {
+            alert("Giriş yapmanız gerekiyor.");
+            return;
+        }
 
         try {
             await axios.post('https://localhost:7264/api/Order', {
-                username: username,
-                orderItems: cartItems.map(item => ({
+                items: cartItems.map(item => ({
                     productId: item.id,
                     quantity: item.quantity
                 }))
@@ -53,19 +61,19 @@ const CartPage = () => {
                 }
             });
 
-            alert('Sipariş başarıyla oluşturuldu!');
+            alert('✅ Sipariş başarıyla oluşturuldu!');
             setCartItems([]);
             localStorage.removeItem('cartItems');
             navigate('/home');
         } catch (error) {
             console.error('Sipariş oluşturulamadı:', error);
-            alert('Sipariş sırasında bir hata oluştu.');
+            alert('🚫 Sipariş sırasında bir hata oluştu.');
         }
     };
 
     return (
         <div>
-            <h1 style={{ textAlign: 'center' }}>Sepetim</h1>
+            <h1 style={{ textAlign: 'center' }}>🛒 Sepetim</h1>
             <Cart
                 cartItems={cartItems}
                 onRemoveFromCart={handleRemoveFromCart}
@@ -74,13 +82,14 @@ const CartPage = () => {
             <div style={{ textAlign: 'center', marginTop: '20px' }}>
                 <button
                     onClick={handleOrderSubmit}
+                    disabled={cartItems.length === 0}
                     style={{
-                        backgroundColor: 'green',
+                        backgroundColor: cartItems.length === 0 ? 'gray' : 'green',
                         color: 'white',
                         padding: '10px 20px',
                         border: 'none',
                         borderRadius: '5px',
-                        cursor: 'pointer',
+                        cursor: cartItems.length === 0 ? 'not-allowed' : 'pointer',
                         marginBottom: '10px'
                     }}
                 >
